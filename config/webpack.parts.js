@@ -6,7 +6,7 @@ exports.devServer = ({ host, port } = {}) => ({
     port, // Defaults to 8080
     open: true,
     overlay: true,
-    contentBase: path.join(__dirname, "../dist/"),
+    contentBase: path.join(__dirname, "../data/"),
   },
 });
 

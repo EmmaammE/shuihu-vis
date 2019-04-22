@@ -1,4 +1,10 @@
-import component from "./component/index";
+import dataStore from "./util/data";
+import scatterGraph from './component/scatterGraph/index'
 import "./main.css";
 
-document.body.appendChild(component());
+dataStore('event.csv', 'relation.csv')
+    .then(data => {
+        console.log(data);
+        scatterGraph.init();
+    })
+    .catch(err => console.log(err))

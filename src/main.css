@@ -237,8 +237,8 @@ transform: translateY(200px)
 .x text {
     font-size: 9px;
     width: 5px;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
+    /* writing-mode: vertical-rl;
+    text-orientation: mixed; */
     fill: #000;
 }
 

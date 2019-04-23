@@ -98,7 +98,9 @@ export default (eventsPath, relationPath) => {
                 console.log(peopleSet);
                 resolve({
                     peopleSet,
-                    scatterData
+                    scatterData,
+                    groupMaps,
+                    groups
                 })
             });
         });

@@ -9,50 +9,6 @@ export default (eventsPath, relationPath) => {
             d3.csv(relationPath, function (err, res) {
                 err && console.log(err);
 
-                /**108 将中每个人的党派关系 */
-                let groups = {
-                    无党派: []
-                };
-
-                res.forEach((ele, index) => {
-                    let _group = ele.group;
-                    if (_group === '无党派') {
-                        groups['无党派'].push(ele);
-                    } else if (groups.hasOwnProperty(_group)) {
-                        groups[_group].push(ele);
-                    } else {
-                        groups[_group] = [ele];
-                    }
-
-                });
-
-                // 每个人对应的大党派关系
-                let groupMaps = new Map();
-                Object.keys(groups).forEach(key => {
-                    groups[key].forEach(item => {
-                        // console.log(item);
-                        if (
-                            key == '关胜' ||
-                            key == '呼延灼' ||
-                            key == '张清' ||
-                            key == '戴宗' ||
-                            key == '李逵' ||
-                            key == '穆弘' ||
-                            key == '李俊' ||
-                            key == '欧鹏' ||
-                            key == '燕顺'
-                        ) {
-                            groupMaps.set(item.name, '宋江');
-                        } else if (key == '史进') {
-                            groupMaps.set(item.name, '鲁智深');
-                        } else {
-                            groupMaps.set(item.name, key);
-                        }
-                    });
-                });
-
-                // console.log(groupMaps);
-
                 /** 在event.csv中出现的所有人*/
                 var peopleSet = new Set();
                 /**
@@ -95,7 +51,96 @@ export default (eventsPath, relationPath) => {
                     //     index: index + 1,
                     // });
                 });
-                console.log(peopleSet);
+
+                /**108 将中每个人的党派关系 */
+                let groups = {
+                    无党派: [],
+                    非108将: [],
+                };
+
+                // console.log(res);
+                res.forEach( ele => {
+                    let _group = ele.group;
+                    if (_group === '无党派') {
+                        groups['无党派'].push(ele);
+                    } else if (groups.hasOwnProperty(_group)) {
+                        groups[_group].push(ele);
+                    } else {
+                        groups[_group] = [ele];
+                    }
+                });
+
+                groups['非108将'] = [...peopleSet.values()].concat(res.map(ele=>ele.name)).filter(function (v, i, arr) {
+                        return arr.indexOf(v) === arr.lastIndexOf(v);
+                    });
+                // console.log(peopleSet);
+                    console.log(groups);
+                //将王定六算到穆弘里面
+                groups['穆弘'].push(groups['张顺'][0]);
+                delete groups['张顺'];
+                // console.log(groups);
+
+                // 每个人对应的大党派关系
+                let groupMaps = new Map();
+                const song = {
+                    '关胜': 1,
+                    '呼延灼': 2,
+                    '张清': 3,
+                    '戴宗': 4,
+                    '李逵': 5,
+                    '穆弘': 6,
+                    '李俊': 7,
+                    '欧鹏': 8,
+                    '燕顺': 9,
+                }
+                Object.keys(groups).forEach(key => {
+                    groups[key].forEach(item => {
+                        // console.log(key);
+                        if (
+                            key == '关胜' ||
+                            key == '呼延灼' ||
+                            key == '张清' ||
+                            key == '戴宗' ||
+                            key == '李逵' ||
+                            key == '穆弘' ||
+                            key == '李俊' ||
+                            key == '欧鹏' ||
+                            key == '燕顺'
+                        ) {
+                            //大党派人物,属于哪一级,对应小派人物,(没有为undefined)
+                            groupMaps.set(item.name, ['宋江', 3, song[key] + 4.1]);
+                        } else if (key == '史进') {
+                            groupMaps.set(item.name, ['鲁智深', 3, 4.1]);
+                        } else if (
+                            item.name == '关胜' ||
+                            item.name == '呼延灼' ||
+                            item.name == '张清' ||
+                            item.name == '戴宗' ||
+                            item.name == '李逵' ||
+                            item.name == '穆弘' ||
+                            item.name == '李俊' ||
+                            item.name == '欧鹏' ||
+                            item.name == '燕顺'
+                        ) {
+                            groupMaps.set(item.name, [key, 2, song[item.name] + 4]);
+                        } else if (item.name == '史进') {
+                            groupMaps.set(item.name, [key, 2, 4]);
+                        } else if (
+                            item.name == '宋江' ||
+                            item.name == '鲁智深' ||
+                            item.name == '林冲' ||
+                            item.name == '卢俊义' ||
+                            item.name == '李应' ||
+                            item.name == '孙立'
+                        ) {
+                            groupMaps.set(item.name, [key, 1, 0])
+                        } else {
+                            groupMaps.set(item.name, [key, 2, 0])
+                        }
+                    });
+                });
+
+                // console.log(groupMaps);
                 resolve({
                     peopleSet,
                     scatterData,

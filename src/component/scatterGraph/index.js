@@ -7,6 +7,7 @@ export default class ScatterGraph {
         this.xdata = opts.xdata;
         this.ydata = opts.ydata;
         this.groupMaps = opts.groupMaps;
+        this.groups = opts.groups;
         // element:d3-selection
         this.element = opts.element.append('svg')
             .attr('width', scatterSetting.scatterWidth + scatterSetting.left + scatterSetting.right)
@@ -17,6 +18,36 @@ export default class ScatterGraph {
     }
 
     draw() {
+        this._ydata = [...this.ydata.keys()];
+        console.log(this._ydata.length);
+
+        let t = [];
+        let _groups = JSON.parse(JSON.stringify(this.groups));
+        for (const key in this.groups) {
+            if (_groups.hasOwnProperty(key) && key !== '非108将') {
+
+                this.groups[key].forEach(ele=>{
+                    if (ele.name != '宋江' &&
+                        ele.name != '鲁智深' &&
+                        ele.name != '林冲' &&
+                        ele.name != '卢俊义' &&
+                        ele.name != '李应' &&
+                        ele.name != '孙立') {
+                        if (_groups.hasOwnProperty(ele.name)) {
+
+                            _groups[ele.name].forEach(ele => {
+                                t.push(ele.name)
+                            })
+                            delete _groups[ele.name];
+                        }
+                    }
+                    t.push(ele.name)
+                })
+            }
+        }
+
+        this._ydata = t.concat(_groups['非108将']);
+
         this.createScales();
         this.addAxes();
         this.addBars();
@@ -25,13 +56,14 @@ export default class ScatterGraph {
     createScales() {
         this.xScale = d3.scaleLinear().range([0,scatterSetting.scatterWidth]).domain([0,258]);
         this.yScale = d3.scaleBand().range([scatterSetting.scatterHeight,0])
-            // .domain([...this.ydata.keys()].reverse());
-            .domain([...this.groupMaps.keys()])
+            .domain(this._ydata.reverse())
+            // .domain([...this.groupMaps.keys()])
     }
 
     addAxes() {
-        const xAxis = d3.axisBottom().scale(this.xScale).tickPadding([20]);
+        const xAxis = d3.axisBottom().scale(this.xScale).tickPadding([10]).ticks(80);
         const yAxis = d3.axisLeft().scale(this.yScale);
+        let that = this;
 
         this.element.append('g')
             .attr('transform', 'translate(1,' + scatterSetting.scatterHeight + ')')
@@ -40,22 +72,60 @@ export default class ScatterGraph {
         this.element.append('g')
             .attr('transform', 'translate(0,0)')
             .attr('class', 'y axis')
+            // .call(yAxis)
             .call(customYAis);
 
         function customYAis(g) {
             g.call(yAxis);
             // g.select('.domain').remove();
-            // g.selectAll(".tick line")
-            //     .attr("stroke", "#777")
-            //     .attr("stroke-dasharray", "2,2")
+
             g.selectAll('.tick').append('rect')
-                .attr('transform','translate(-40,-5)')
-                .attr('height','10px')
-                .attr('width',d=>{
-                    console.log(d);
-                    return '40px';
+                .attr('transform', d=> {
+                    if (that.groupMaps.has(d)) {
+                        let level = that.groupMaps.get(d);
+                        switch (level[1]) {
+                            case 1:
+                                return 'translate(-100,-5)'
+                            case 2:
+                                return 'translate(-65,-5)'
+                            default:
+                                return 'translate(-40,-5)'
+                        }
+                    } else {
+                        return 'translate(-40,-5)'
+                    }
                 })
-                .style('stroke','#ff0')
+                .attr('height','8px')
+                .attr('width',d=>{
+                    // console.log(d);
+                    if (that.groupMaps.has(d)) {
+                        let level = that.groupMaps.get(d);
+                        switch (level[1]) {
+                            case 1:
+                                return '100px'
+                            case 2:
+                                return '65px'
+                            default:
+                                return '40px'
+                        }
+                    } else {
+                        return '40px'
+                    }
+                })
+                // .style('stroke','#ff0')
+                .style('fill', d => {
+                    if (that.groupMaps.has(d)) {
+                        let level = that.groupMaps.get(d);
+                        return colorThemes_[level[0]];
+                    } else {
+                        return '#eee'
+                    }
+                });
+            g.selectAll('.tick').select('text').raise();
+            g.selectAll(".tick line")
+                .attr("stroke", "#eee")
+                .attr('x2',scatterSetting.scatterWidth)
+                .attr("stroke-dasharray", "2,2").raise();
         }
 
     }
@@ -69,15 +139,19 @@ export default class ScatterGraph {
             .attr('class', 'bubble')
             .attr('y', d => this.yScale(d.person))
             .attr('x', d => this.xScale(d.eventId))
-            .attr('width', scatterSetting.scatterWidth / this.ydata.size - 1)
-            .attr('height', scatterSetting.scatterHeight / 259)
-            .attr('transform', 'translate(2,-2)')
+            .attr('width', scatterSetting.scatterWidth / 259)
+            .attr('height', scatterSetting.scatterHeight / this.ydata.size - 1)
+            .attr('transform', 'translate(-1,0)')
             // .attr('data-event', d => d.eventId)
             .style('fill', d => {
                 // color(d.eventId)
-                return colorThemes_[this.groupMaps.get(d.person)] ?
-                    colorThemes_[this.groupMaps.get(d.person)] :
-                    '#ccc'
+                // console.log(this.groupMaps.get(d.person));//有undefined
+                let t = this.groupMaps.get(d.person);
+                if (t) {
+                    return colorThemes_[this.groupMaps.get(d.person)[0]];
+                } else {
+                    return '#ccc';
+                }
             })
             .on('mouseover', d => {
                 console.log(d);

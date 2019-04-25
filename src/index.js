@@ -2,7 +2,7 @@ import dataStore from "./util/data";
 import ScatterGraph from './component/scatterGraph/index'
 import "./main.css";
 
-const debug = true;
+const debug = false;
 dataStore('event.csv', 'relation.csv')
     .then(data => {
         debug && console.log(data);
@@ -10,7 +10,8 @@ dataStore('event.csv', 'relation.csv')
             element:d3.select('#scatter'),
             xdata:data.scatterData,
             ydata:data.peopleSet,
-            groupMaps:data.groupMaps
+            groupMaps:data.groupMaps,
+            groups:data.groups
         })
     })
     .catch(err => console.log(err))

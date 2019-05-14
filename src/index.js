@@ -1,17 +1,58 @@
 import dataStore from "./util/data";
-import ScatterGraph from './component/scatterGraph/index'
+import ScatterGraph from './component/scatterGraph/index';
+import LineChart from "./component/lineChart/lineChart";
+import { lineGraphSetting} from "./util/setting";
 import "./main.css";
 
 const debug = false;
 dataStore('event.csv', 'relation.csv')
     .then(data => {
         debug && console.log(data);
-        const scatterGraph = new ScatterGraph({
+
+        const lineChart = new LineChart({
+            element:d3.select('#linechart'),
+            data: data.eventsData,
+        });
+
+        let scatterGraph = new ScatterGraph({
             element:d3.select('#scatter'),
-            xdata:data.scatterData,
-            ydata:data.peopleSet,
-            groupMaps:data.groupMaps,
-            groups:data.groups
+            xdata:data.scatterData.scatterData,
+            ydata:data.scatterData.peopleSet,
+            groupMaps:data.scatterData.groupMaps,
+            groups:data.scatterData.groups
         })
+
+        let $linechart = document.getElementById('linechart');
+        let scrollMax = lineGraphSetting.lineGraphWidth - $linechart.offsetWidth;
+        // setTimeout(() => {
+
+        // }, 1000);
+
+        $linechart.addEventListener('scroll', function (event) {
+            console.log(this.scrollLeft);
+            let index = this.scrollLeft / scrollMax * 254;
+            let eventsPeople = new Set();
+            let eventsExtent = toExtent(index);
+            console.log(data.scatterData.scatterData);
+            // data.scatterData.scatterData.filter(e=>{
+            //     return e.eventId <= eventsExtent[1] && e.eventId >= eventsExtent[0]
+            // })
+            data.scatterData.scatterData.forEach(e => {
+                if (e.eventId <= eventsExtent[1] && e.eventId >= eventsExtent[0]) {
+                    eventsPeople.add(e.person)
+                }
+            });
+            scatterGraph.update( eventsPeople, eventsExtent);
+        })
+
+        function toExtent(i) {
+            if (i-10 <= 0) {
+                return [0,50]
+            } else if (i+30>=259){
+                return [229,259];
+            } else {
+                return [i-10,i+30]
+            }
+        }
     })
     .catch(err => console.log(err))

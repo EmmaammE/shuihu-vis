@@ -9,6 +9,51 @@
 </head>
 
 <body>
+    <div class="box-container">
+        <div class="search-container">
+            <fieldset class="field-container">
+                <input type="text" placeholder="搜索..." class="field" />
+                <div class="icons-container">
+                    <div class="icon-search"></div>
+                    <div class="icon-close"></div>
+                </div>
+            </fieldset>
+        </div>
+        <div id="linechart"></div>
+    </div>
+
+    <div class="scatter-container">
+
+        <div id="scatter">
+<ul>
+    <li>
+        <p>宋江</p>
+    </li>
+    <li>
+        <p>鲁智深</p>
+    </li>
+    <li>
+        <p>林冲</p>
+    </li>
+    <li>
+        <p>卢俊义</p>
+    </li>
+    <li>
+        <p>李应</p>
+    </li>
+    <li>
+        <p>孙立</p>
+    </li>
+    <li>
+        <p>无党派</p>
+    </li>
+    <li>
+        <p>非108将</p>
+    </li>
+</ul>
+        </div>
+
+    </div>
     <div class="container">
         <div class="tool-area">
             <div class="card" id='event-detail'>
@@ -34,69 +79,11 @@
         <div class="story-container">
             <div id="story">
                 <div id="slider"></div>
-
             </div>
         </div>
     </div>
-
-    <div class="scatter-container">
-        <div id="scatter">
-            <ul>
-                <li>
-                    <p>宋江</p>
-                </li>
-                <li>
-                    <p>鲁智深</p>
-                </li>
-                <li>
-                    <p>林冲</p>
-                </li>
-                <li>
-                    <p>卢俊义</p>
-                </li>
-                <li>
-                    <p>李应</p>
-                </li>
-                <li>
-                    <p>孙立</p>
-                </li>
-                <li>
-                    <p>无党派</p>
-                </li>
-                <li>
-                    <p>非108将</p>
-                </li>
-            </ul>
-        </div>
-        <div id="treeNodes">
-            <div class='nodes-tools'>
-                <div class="exp">
-                    <div class="checkbox">
-                        <form>
-                            <div>
-                                <input type="checkbox" id="toggle" name="check" value="" />
-                                <label for="toggle">
-                                    <span>
-                                        <!-- This span is needed to create the "checkbox" element --></span>
-                                </label>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-                <fieldset class="field-container">
-                    <input type="text" placeholder="搜索..." class="field" />
-                    <div class="icons-container">
-                        <div class="icon-search"></div>
-                        <div class="icon-close"></div>
-                    </div>
-                </fieldset>
-            </div>
-        </div>
-
-
-    </div>
-
-    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <!-- <script src="https://d3js.org/d3.v4.min.js"></script> -->
+    <script src="d3v4.js"></script>
 </body>
 
 </html>

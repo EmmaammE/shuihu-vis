@@ -1,0 +1,44 @@
+.line {
+    fill: none;
+    stroke: #192a3a;
+    stroke-width: 1px;
+}
+
+.e {
+    font-size: 9px;
+    width: 5px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    fill: #000;
+}
+
+.box-container {
+    max-width: 1500px;
+}
+
+.box-container .domain,
+.box-container .tick line {
+    stroke: #8caaaa;
+    stroke-width: 1px;
+}
+
+.box-container text {
+    fill:#304a49
+}
+.pointer {
+    fill: #8caaaa;
+}
+
+.legend {
+    fill: #e4e5ea;
+    opacity: 0.5;
+}
+
+.legend-line {
+    stroke: #e4e5ea;
+    stroke-width: 1px;
+}
+
+#linechart {
+    overflow-x: scroll;
+}

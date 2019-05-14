@@ -1,0 +1,76 @@
+
+
+.scatter-container {
+    display: flex;
+}
+
+#scatter {
+    max-height: 500px;
+    overflow: hidden;
+    position: relative;
+
+}
+
+#scatter .x text {
+    font-size: 9px;
+    width: 5px;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    fill: #000;
+}
+
+.scatter-container ul {
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    /* margin-top: 200px; */
+    /* position: absolute;
+    bottom: 400px;
+    right: 100px; */
+}
+
+.scatter-container li p {
+    display: inline;
+    font-size: 12px;
+
+}
+
+.scatter-container li::before {
+    content: '';
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+}
+
+.scatter-container li:nth-child(1)::before {
+    background: #3c6da8;
+}
+
+.scatter-container li:nth-child(2)::before {
+    background: #df2929;
+}
+
+.scatter-container li:nth-child(3)::before {
+    background: #cab2d6;
+}
+
+.scatter-container li:nth-child(4)::before {
+    background: #b2df8a;
+}
+
+.scatter-container li:nth-child(5)::before {
+    background: #a6cee3;
+}
+
+.scatter-container li:nth-child(6)::before {
+    background: #fdbf6f;
+}
+
+.scatter-container li:nth-child(7)::before {
+    background: #1d5464;
+}
+
+.scatter-container li:nth-child(8)::before {
+    background: #ccc;
+}

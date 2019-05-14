@@ -9,14 +9,14 @@ export const colorThemes = {
 };
 
 const margin = {
-    top: 30,
+    top: 60,
     right: 50,
     bottom: 60,
     left: 120
 };
 
-const scatterWidth = 1500 - margin.left - margin.right;
-const scatterHeight = 1200 - margin.top - margin.bottom;
+const scatterWidth = 1000 - margin.left - margin.right;
+const scatterHeight = 500 - margin.top - margin.bottom;
 
 export const scatterSetting = {...margin,scatterWidth,scatterHeight};
 
@@ -30,3 +30,14 @@ export const colorThemes_ = {
     无党派: ' #f3a8bd',
     非108将: '#f1f3ff'
 };
+
+const lineGraphMargin = {
+    top: 40,
+    right: 20,
+    bottom: 50,
+    left: 24,
+}
+
+const lineGraphWidth = 4000 - lineGraphMargin.right - lineGraphMargin.left;
+const lineGraphHeight = 250 - lineGraphMargin.top - lineGraphMargin.bottom;
+export const lineGraphSetting = {...lineGraphMargin,lineGraphWidth,lineGraphHeight};

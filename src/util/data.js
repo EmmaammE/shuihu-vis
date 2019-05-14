@@ -59,7 +59,7 @@ export default (eventsPath, relationPath) => {
                 };
 
                 // console.log(res);
-                res.forEach( ele => {
+                res.forEach(ele => {
                     let _group = ele.group;
                     if (_group === '无党派') {
                         groups['无党派'].push(ele);
@@ -70,11 +70,11 @@ export default (eventsPath, relationPath) => {
                     }
                 });
 
-                groups['非108将'] = [...peopleSet.values()].concat(res.map(ele=>ele.name)).filter(function (v, i, arr) {
-                        return arr.indexOf(v) === arr.lastIndexOf(v);
-                    });
+                groups['非108将'] = [...peopleSet.values()].concat(res.map(ele => ele.name)).filter(function (v, i, arr) {
+                    return arr.indexOf(v) === arr.lastIndexOf(v);
+                });
                 // console.log(peopleSet);
-                    console.log(groups);
+                console.log(groups);
                 //将王定六算到穆弘里面
                 groups['穆弘'].push(groups['张顺'][0]);
                 delete groups['张顺'];
@@ -142,10 +142,13 @@ export default (eventsPath, relationPath) => {
 
                 // console.log(groupMaps);
                 resolve({
-                    peopleSet,
-                    scatterData,
-                    groupMaps,
-                    groups
+                    scatterData: {
+                        peopleSet,
+                        scatterData,
+                        groupMaps,
+                        groups
+                    },
+                    eventsData: response
                 })
             });
         });

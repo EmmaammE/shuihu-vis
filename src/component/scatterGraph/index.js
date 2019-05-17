@@ -226,8 +226,8 @@ export default class ScatterGraph {
                     rects.attr('x', d => this.xScale(d.person))
                         .attr('y', d => this.yScale(d.eventId))
                         .attr('width', 0.9 * scatterSetting.scatterWidth / _people.length)
-                        .attr('height', 0.9 * scatterSetting.scatterHeight / _data.length)
-                        .attr('transform', 'translate(' + 0.05 * scatterSetting.scatterWidth / _people.length+ ',-' + 0.45 * scatterSetting.scatterHeight / _data.length + ')')
+                        .attr('height', 0.9 * scatterSetting.scatterHeight / 50)
+                        .attr('transform', 'translate(' + 0.05 * scatterSetting.scatterWidth / _people.length+ ',-' + 0.45 * scatterSetting.scatterHeight / 50 + ')')
 
                     console.log('model:--------------',model);
                 }

@@ -16,8 +16,7 @@ const margin = {
 };
 
 const scatterWidth = 1000 - margin.left - margin.right;
-const scatterHeight = 500 - margin.top - margin.bottom;
-
+const scatterHeight = 600 - margin.top - margin.bottom;
 export const scatterSetting = {...margin,scatterWidth,scatterHeight};
 
 export const colorThemes_ = {
@@ -41,3 +40,14 @@ const lineGraphMargin = {
 const lineGraphWidth = 4000 - lineGraphMargin.right - lineGraphMargin.left;
 const lineGraphHeight = 250 - lineGraphMargin.top - lineGraphMargin.bottom;
 export const lineGraphSetting = {...lineGraphMargin,lineGraphWidth,lineGraphHeight};
+
+const treemapMargin = {
+    top:0,
+    right:0,
+    left:0,
+    bottom:20
+}
+
+const treemapWidth = 520 - treemapMargin.right - treemapMargin.left;
+const treemapHeight = 700 - treemapMargin.top - treemapMargin.bottom;
+export const treemapSetting = {...treemapMargin,treemapWidth,treemapHeight};

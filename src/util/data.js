@@ -58,8 +58,19 @@ export default (eventsPath, relationPath) => {
                     非108将: [],
                 };
 
+                let hierarchyData2 = res.slice();
                 // console.log(res);
-                res.forEach(ele => {
+                let hierarchyData = {
+                    name:'派系',
+                    children:[{
+                        name:'宋江',
+                        children:[]
+                    },{
+                        name:'鲁智深',
+                        children:[]
+                    }]
+                };
+                res.forEach((ele,index) => {
                     let _group = ele.group;
                     if (_group === '无党派') {
                         groups['无党派'].push(ele);
@@ -68,17 +79,90 @@ export default (eventsPath, relationPath) => {
                     } else {
                         groups[_group] = [ele];
                     }
+
+                    if(ele['relation'] == '自己') {
+                        hierarchyData2[index]['group'] = 'root';
+                    }
                 });
+
+                    hierarchyData2.push({
+                        id: 109,
+                        star: '',
+                        nickname: '',
+                        name: 'root',
+                        group: '',
+                        relation: ''
+                    }, {
+                        id: 110,
+                        star: '',
+                        nickname: '',
+                        name: '无党派',
+                        group: 'root',
+                        relation: ''
+                    });
 
                 groups['非108将'] = [...peopleSet.values()].concat(res.map(ele => ele.name)).filter(function (v, i, arr) {
                     return arr.indexOf(v) === arr.lastIndexOf(v);
                 });
-                // console.log(peopleSet);
-                console.log(groups);
                 //将王定六算到穆弘里面
                 groups['穆弘'].push(groups['张顺'][0]);
                 delete groups['张顺'];
-                // console.log(groups);
+                console.log(groups);
+
+                for (const key in groups) {
+                    if (groups.hasOwnProperty(key)) {
+                        const element = groups[key];
+                        if (key == '史进') {
+                            hierarchyData.children[1].children.push({
+                                name: key,
+                                children: element.map(e => ({
+                                    name: e.name,
+                                    size: 1
+                                }))
+                            })
+                        } else if (key == '关胜' ||
+                            key == '呼延灼' ||
+                            key == '张清' ||
+                            key == '戴宗' ||
+                            key == '李逵' ||
+                            key == '穆弘' ||
+                            key == '李俊' ||
+                            key == '欧鹏' ||
+                            key == '燕顺') {
+                            hierarchyData.children[0].children.push({
+                                name:key,
+                                children: element.map(e => ({
+                                    name: e.name,
+                                    size: 1
+                                }))
+                            })
+                        } else if ( key == '宋江') {
+                            hierarchyData.children[0].children = hierarchyData.children[0].children.concat(element.map(e => ({
+                                name: e.name,
+                                size: 1
+                            })))
+                        } else if ( key == '鲁智深') {
+                            hierarchyData.children[1].children = hierarchyData.children[1].children.concat(element.map(e => ({
+                                name: e.name,
+                                size: 1
+                            })))
+                        } else {
+                            hierarchyData.children.push({
+                                name: key,
+                                children: element.map(e => ({
+                                    name: e.name?e.name:e,
+                                    size: 1
+                                }))
+                            })
+                        }
+                    }
+                }
+
+                hierarchyData.children[6].children[0] = {
+                    name:'',
+                    size:1
+                };
+                // console.log('hire', hierarchyData);
 
                 // 每个人对应的大党派关系
                 let groupMaps = new Map();
@@ -148,7 +232,8 @@ export default (eventsPath, relationPath) => {
                         groupMaps,
                         groups
                     },
-                    eventsData: response
+                    eventsData: response,
+                    hierarchyData:hierarchyData
                 })
             });
         });

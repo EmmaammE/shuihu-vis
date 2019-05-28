@@ -1,0 +1,45 @@
+.word-cloud {
+    width: 300px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    list-style: none;
+    text-align: justify;
+
+    position: absolute;
+    bottom: 100px;
+    right: 100px;
+}
+
+.word-cloud__word {
+    display: inline-block!important;
+    font-size: 18px;
+    line-height: 24px;
+    color: #90d6f3;
+}
+
+.word-cloud__word--x-small,
+.word-cloud__word--small {
+    font-weight: 100;
+}
+
+.word-cloud__word--x-small {
+    font-size: 10px;
+    color: #848f94;
+}
+
+.word-cloud__word--small {
+    font-size: 13px;
+    color: #b0def2;
+}
+
+.word-cloud__word--large {
+    font-size: 22px;
+    color: #0fa0dd;
+}
+
+.word-cloud__word--x-large {
+    font-size: 32px;
+    letter-spacing: -0.0125em;
+    color: #0a79a7;
+}

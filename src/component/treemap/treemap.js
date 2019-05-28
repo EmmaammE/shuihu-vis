@@ -13,7 +13,7 @@ export default class TreeMap {
             .append('g')
             .attr('transform', 'translate(' + treemapSetting.left + ',' + treemapSetting.top + ')');
 
-        console.log(this.data);
+        // console.log(this.data);
         this.draw();
     }
 

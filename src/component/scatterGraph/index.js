@@ -1,5 +1,6 @@
 import { scatterSetting, colorThemes_ } from "../../util/setting";
 import "./scatter.css"
+import wordcloud from "../wordcloud/wordcloud";
 const debug = true;
 //model为0_x轴为人物，model为1_y轴为
 const model = 0;
@@ -18,6 +19,10 @@ export default class ScatterGraph {
             .append('g')
             .attr('transform', 'translate(' + scatterSetting.left + ',' + scatterSetting.top + ')');
         this.eventDatas = 259;
+
+        this.wordcloud = new wordcloud({
+            allEvents:opts.events
+        })
         this.draw();
     }
 
@@ -202,7 +207,7 @@ export default class ScatterGraph {
                     }
                 })
                 .on('mouseover', d => {
-                    console.log(d);
+                    console.log('mouseover',d);
                     rects.style('opacity', e => {
                         if (e.person == d.person || e.eventId == d.eventId) {
                             return 1;
@@ -210,6 +215,8 @@ export default class ScatterGraph {
                             return 0.5;
                         }
                     });
+
+                    this.wordcloud.updateGraph(d.eventId);
                 })
                 .on('mouseout', d => {
                     rects.style('opacity', 1);
@@ -263,6 +270,8 @@ export default class ScatterGraph {
                             return 0.5;
                         }
                     });
+                    this.wordcloud.updateGraph(d.eventId);
+
                 })
                 .on('mouseout', d => {
                     rects.style('opacity', 1);

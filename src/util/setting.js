@@ -51,3 +51,8 @@ const treemapMargin = {
 const treemapWidth = 520 - treemapMargin.right - treemapMargin.left;
 const treemapHeight = 700 - treemapMargin.top - treemapMargin.bottom;
 export const treemapSetting = {...treemapMargin,treemapWidth,treemapHeight};
+
+export const wordcloudSetting = {
+    width:300,
+    height:200
+}

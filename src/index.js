@@ -20,7 +20,8 @@ dataStore('event.csv', 'relation.csv')
             xdata:data.scatterData.scatterData,
             ydata:data.scatterData.peopleSet,
             groupMaps:data.scatterData.groupMaps,
-            groups:data.scatterData.groups
+            groups:data.scatterData.groups,
+            events:data.eventsData
         })
 
         let $linechart = document.getElementById('linechart');

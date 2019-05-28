@@ -23,7 +23,8 @@
 }
 
 .box-container text {
-    fill:#304a49
+    fill:#304a49;
+    font-size:7px;
 }
 .pointer {
     fill: #8caaaa;
@@ -40,5 +41,10 @@
 }
 
 #linechart {
-    overflow-x: scroll;
+    overflow-x: auto;
+}
+
+.zoom {
+    fill: none;
+    pointer-events: all;
 }

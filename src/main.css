@@ -560,6 +560,6 @@ input[type="checkbox"]:checked+label:hover span:before {
     right: 4%;
 }
 
-text {
+/* text {
     font-size: 11px!important;
-}
+} */

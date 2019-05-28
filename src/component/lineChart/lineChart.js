@@ -1,15 +1,17 @@
 import { lineGraphSetting } from "../../util/setting";
 import "./lineChart.css"
 
+const _width = window.innerWidth - lineGraphSetting.left - lineGraphSetting.right;
 export default class LineChart {
     constructor(opts) {
         this.data = opts.data;
         this.element = opts.element.append('svg')
-                    .attr('width', lineGraphSetting.lineGraphWidth + lineGraphSetting.left + lineGraphSetting.right)
+                    .attr('width', _width )
                     .attr('height', lineGraphSetting.lineGraphHeight + lineGraphSetting.top + lineGraphSetting.bottom)
                     .append('g')
                     .attr('transform','translate(' + lineGraphSetting.left + ',' + lineGraphSetting.top + ')');
 
+        this.currLevel = 0;
         // console.log(this.data);
         this.draw();
     }
@@ -18,10 +20,77 @@ export default class LineChart {
         this.createScales();
         this.addAxes();
         this.createLines();
+        this.addZoomListener();
+        this.addZoomButtons();
     }
 
+    addZoomButtons() {
+        // [tx + k * x0, ty + k * y0]
+        // 倍数因子数组, 初始k->每个元素间隔20px->每个元素间隔40px
+        let k = [1, 20 / (this.xScale(2) - this.xScale(1)), 40/(this.xScale(2)-this.xScale(1))];
+        document.getElementById('higher').addEventListener('click',function () {
+           this.currLevel = (this.currLevel + 1) % 3;
+
+
+        })
+    }
+
+    addZoomListener() {
+
+        let that = this;
+        function zoomed() {
+            let t = d3.event.transform;
+            if ( t.k <= 1 ) {
+                that.updateLines(that.xScale,d=>that.xScale(d['编号']))
+                return;
+            }
+            console.log(t);
+
+            let xNewScale = t.rescaleX(that.xScale);
+            console.log(xNewScale.domain());
+            let toX = d => xNewScale(d['编号']);
+            that.updateLines(xNewScale, toX);
+
+        }
+        var zoom = d3.zoom()
+        .scaleExtent([1,10])
+        // .extent([0,0], [_width , lineGraphSetting.lineGraphHeight])
+        .on('zoom', zoomed);
+
+        this.element.append("rect")
+            .attr("class", "zoom")
+            .attr("width", _width)
+            .attr("height", lineGraphSetting.lineGraphHeight)
+            .call(zoom);
+    }
+
+    updateLines(_scale,_scaleToX) {
+        let self = this;
+        d3.select('g.x').transition().call(self.xAxis.scale(_scale));
+        d3.selectAll('.line')
+            .transition()
+            // .style("stroke-width", 2 * (t / 10))
+            .attr('d', d3.line()
+                .x(_scaleToX)
+                .y(function (d) {
+                    return self.yScale(d.personArr.length);
+                }));
+
+        let legends = d3.select('g.legends')
+            .selectAll('g');
+        legends.select('line')
+            .transition()
+            .attr('x1', _scaleToX)
+            .attr('x2', _scaleToX);
+        legends.select('circle')
+            .transition()
+            .attr('transform', d => 'translate(' + _scaleToX(d) + ',' + self.yScale(d.personArr.length) + ')');
+        legends.select('text')
+            .transition()
+            .attr('x', _scaleToX);
+    }
     createScales() {
-        this.xScale = d3.scaleLinear().range([0,lineGraphSetting.lineGraphWidth]).domain([0,this.data.length]);
+        this.xScale = d3.scaleLinear().range([0,_width - lineGraphSetting.right - lineGraphSetting.left]).domain([0,this.data.length]);
         this.yScale = d3.scaleLinear().range([lineGraphSetting.lineGraphHeight,0])
             .domain([0,d3.max(this.data,d => d.personArr.length)]).nice();
             // .domain([0, 30]).nice();
@@ -29,7 +98,7 @@ export default class LineChart {
     }
 
     addAxes() {
-        const xAxis = d3.axisBottom().scale(this.xScale).tickPadding([10]).ticks(120);
+        let xAxis = d3.axisBottom().scale(this.xScale).tickPadding([10]).ticks(60);
         const yAxis = d3.axisLeft().scale(this.yScale);
 
         this.element.append('g')
@@ -39,7 +108,9 @@ export default class LineChart {
         this.element.append('g')
             .attr('transform', 'translate(0,0)')
             .attr('class', 'y axis')
-            .call(yAxis)
+            .call(yAxis);
+
+        this.xAxis = xAxis;
     }
 
     createLines() {
@@ -59,6 +130,7 @@ export default class LineChart {
             .attr("d", valueline);
 
         const legends = this.element.append('g')
+            .attr('class','legends')
             .selectAll('g')
             .data(this.data)
             .enter()
@@ -70,8 +142,7 @@ export default class LineChart {
         let _x1 = (d) => this.xScale(d['编号'])
         let _y1 = (d) => this.yScale(d.personArr.length);
         let _x2 = (d) => this.xScale(d['编号']);
-        // let _y2 = (d) => (this.yScale(d.personArr.length*8) - 50);
-        let _y2 = (d) => (lineGraphSetting.lineGraphHeight - this.yScale(d.personArr.length) + 50 * _random(d['编号']))
+        let _y2 = (d) => (lineGraphSetting.lineGraphHeight - this.yScale(d.personArr.length) + 100 * _random(d['编号']))
 
         legends.append('line')
             // .filter(d, d['abbr']=='')
@@ -87,10 +158,10 @@ export default class LineChart {
             .attr('class', 'pointer')
             .attr('transform', d => _point1(d))
 
-        legends.append('circle')
-            .attr('r', d => d['abbr'].length * 3 + 'px')
-            .attr('class','legend')
-            .attr('transform', d => 'translate(' + _x2(d) +',' + _y2(d) + ')')
+        // legends.append('circle')
+        //     .attr('r', d => d.personArr.length)
+        //     .attr('class','legend')
+        //     .attr('transform', d => 'translate(' + _x2(d) +',' + _y2(d) + ')')
 
         legends.append('text')
             .text(d => d['abbr'])

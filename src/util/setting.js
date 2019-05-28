@@ -32,7 +32,7 @@ export const colorThemes_ = {
 
 const lineGraphMargin = {
     top: 40,
-    right: 20,
+    right: 30,
     bottom: 50,
     left: 24,
 }
@@ -48,8 +48,8 @@ const treemapMargin = {
     bottom:20
 }
 
-const treemapWidth = 520 - treemapMargin.right - treemapMargin.left;
-const treemapHeight = 700 - treemapMargin.top - treemapMargin.bottom;
+const treemapWidth = 620 - treemapMargin.right - treemapMargin.left;
+const treemapHeight = 600 - treemapMargin.top - treemapMargin.bottom;
 export const treemapSetting = {...treemapMargin,treemapWidth,treemapHeight};
 
 export const wordcloudSetting = {

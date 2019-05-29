@@ -48,3 +48,7 @@
     fill: none;
     pointer-events: all;
 }
+
+.overlay {
+    fill: #fff;
+}

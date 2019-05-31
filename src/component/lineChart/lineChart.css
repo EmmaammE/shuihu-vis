@@ -40,15 +40,11 @@
     stroke-width: 1px;
 }
 
-#linechart {
-    overflow-x: auto;
-}
-
 .zoom {
     fill: none;
     pointer-events: all;
 }
 
-.overlay {
+.rect_overlay {
     fill: #fff;
 }

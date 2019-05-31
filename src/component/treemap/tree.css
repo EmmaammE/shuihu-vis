@@ -19,3 +19,7 @@ body {
     writing-mode: vertical-rl;
     text-orientation: mixed;
 }
+
+#treemap text {
+    font-size: 11px!important;
+}

@@ -48,11 +48,23 @@ const treemapMargin = {
     bottom:20
 }
 
-const treemapWidth = 620 - treemapMargin.right - treemapMargin.left;
+const treemapWidth = 620- treemapMargin.right - treemapMargin.left;
 const treemapHeight = 600 - treemapMargin.top - treemapMargin.bottom;
 export const treemapSetting = {...treemapMargin,treemapWidth,treemapHeight};
 
 export const wordcloudSetting = {
     width:300,
     height:200
+}
+
+export const song = {
+    1:'关胜',
+    2:'呼延灼',
+    3:'张清',
+    4:'戴宗',
+    5:'李逵',
+    6:'穆弘',
+    7:'李俊',
+    8:'欧鹏',
+    9:'燕顺',
 }

@@ -53,7 +53,8 @@ dataStore('event.csv', 'relation.csv')
 
         let treemap = new TreeMap({
             element:d3.select('#treemap'),
-            data: data.hierarchyData
+            data: data.hierarchyData,
+            groupMaps: data.scatterData.groupMaps,
         })
     })
     .catch(err => console.log(err))

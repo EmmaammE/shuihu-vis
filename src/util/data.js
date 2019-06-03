@@ -107,7 +107,7 @@ export default (eventsPath, relationPath) => {
                 //将王定六算到穆弘里面
                 groups['穆弘'].push(groups['张顺'][0]);
                 delete groups['张顺'];
-                console.log(groups);
+                // console.log(groups);
 
                 for (const key in groups) {
                     if (groups.hasOwnProperty(key)) {

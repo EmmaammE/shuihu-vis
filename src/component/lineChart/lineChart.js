@@ -24,7 +24,7 @@ export default class LineChart {
 				'translate(' + lineGraphSetting.left + ',' + lineGraphSetting.top + ')'
 			);
 
-		this.currLevel = 0;
+		this.currLevel = 1;
 		this.draw();
 
 		this.idled = this.idled.bind(this);
@@ -38,7 +38,6 @@ export default class LineChart {
 		this.drawBrush();
 
 		// this.addZoomListener();
-		// this.addZoomButtons();
 	}
 
 	addZoomButtons() {
@@ -335,6 +334,9 @@ export default class LineChart {
 		var $brush = this.element
 			.append('g')
 			.attr('class', 'brush')
+			// .on('customBrush',function (params) {
+			// 	console.log('cs');
+			// })
 			.call(brush);
 		let that = this;
 		let domain = this.xScale.domain();
@@ -342,13 +344,49 @@ export default class LineChart {
 		function updateChart() {
 			var extent = d3.event.selection;
 			console.log('extent', extent);
+			let level;
 			// console.log('类型检测', Object.prototype.toString.call(that.xScale));
 			if (!extent) {
 				if (!that.idleTimeout) {
 					return (that.idleTimeout = setTimeout(that.idled, 500));
 				}
 			} else {
-				that.xScale.domain([that.xScale.invert(extent[0]), that.xScale.invert(extent[1])]);
+				let low = that.xScale.invert(extent[0]);
+				let high = that.xScale.invert(extent[1]);
+				that.xScale.domain([low,high]);
+
+				let k = _width / (high - low);
+				if (k <= 20) {
+					level = 1;
+				} else if (k <= 45) {
+					level = 2;
+				} else {
+					level = 3;
+				}
+
+				// todo：限制可放大的范围
+				let peopleSet = new Set();
+				let peopleEvent = {};
+				for (let index = Math.floor(low); index < Math.round(high); index++) {
+					if (that.data[index]) {
+						that.data[index].personArr.forEach(e => {
+							peopleSet.add(e);
+							if (peopleEvent[e]) {
+								peopleEvent[e].push(index);
+							} else {
+								peopleEvent[e] = [index];
+							}
+						})
+					}
+
+				}
+				// 注册的事件的元素:treemap下的svg
+				d3.select('#treemap').select('svg').dispatch('customBrush', {
+					detail: {
+						people: [...peopleSet.keys()],
+						peopleEvent:peopleEvent
+					}
+				});
 				that.element.select('.brush').call(brush.move, null);
 			}
 
@@ -356,17 +394,22 @@ export default class LineChart {
 			d3.select('g.x')
 				.transition()
 				.call(that.xAxis.scale(that.xScale));
-			that.updateLines(that.xScale, d => that.xScale(d['编号']), 2);
+
+
+			that.updateLines(that.xScale, d => that.xScale(d['编号']), level);
 		}
 
 		this.element
 			.on('dblclick', function () {
 				that.xScale.domain(domain);
-				console.log('domain', domain);
+				// console.log('domain', domain);
 				d3.select('g.x')
 					.transition()
 					.call(that.xAxis.scale(that.xScale));
-				console.log('dbclik', that.xScale.domain());
+				// console.log('dbclik', that.xScale.domain());
+
+				// 注册事件：treemap下的svg
+				d3.select('#treemap').select('svg').dispatch('removeBrush');
 				that.updateLines(that.xScale, d => that.xScale(d['编号']), 1);
 			});
 	}

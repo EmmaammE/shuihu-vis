@@ -23,3 +23,8 @@ body {
 #treemap text {
     font-size: 11px!important;
 }
+
+.hidden {
+    transition: all ease-in-out 200ms;
+    opacity: 0;
+}

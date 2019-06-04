@@ -358,7 +358,7 @@ export default class LineChart {
 				let k = _width / (high - low);
 				if (k <= 20) {
 					level = 1;
-				} else if (k <= 45) {
+				} else if (k <= 30) {
 					level = 2;
 				} else {
 					level = 3;
@@ -380,6 +380,8 @@ export default class LineChart {
 					}
 
 				}
+
+				that.xAxis.ticks(high-low);
 				// 注册的事件的元素:treemap下的svg
 				d3.select('#treemap').select('svg').dispatch('customBrush', {
 					detail: {
@@ -387,7 +389,7 @@ export default class LineChart {
 						peopleEvent:peopleEvent
 					}
 				});
-				that.element.select('.brush').call(brush.move, null);
+				// that.element.select('.brush').call(brush.move, null);
 			}
 
 			// that.xAxis.call(that.xScale);

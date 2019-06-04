@@ -158,10 +158,10 @@ export default (eventsPath, relationPath) => {
                     }
                 }
 
-                hierarchyData.children[6].children[0] = {
-                    name:'',
-                    size:1
-                };
+                // hierarchyData.children[6].children[0] = {
+                //     name:'',
+                //     size:1
+                // };
                 // console.log('hire', hierarchyData);
 
                 // 每个人对应的大党派关系

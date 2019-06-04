@@ -48,7 +48,7 @@ const treemapMargin = {
     bottom:20
 }
 
-const treemapWidth = 620- treemapMargin.right - treemapMargin.left;
+const treemapWidth = 640- treemapMargin.right - treemapMargin.left;
 const treemapHeight = 600 - treemapMargin.top - treemapMargin.bottom;
 export const treemapSetting = {...treemapMargin,treemapWidth,treemapHeight};
 

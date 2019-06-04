@@ -54,6 +54,8 @@ export default class TreeMap {
                     selectedData[parent] = [ele];
                 }
             })
+
+            console.log(peopleEvent,':peopleEvent');
             // 1代表为父亲节点；2是直接child；3是再子
             let _data = {
                 name:'派系',
@@ -91,7 +93,7 @@ export default class TreeMap {
                                         }
                                         _data.children[indexOutter].children[indexInner] = {
                                             name:"史进",
-                                            children:selectedData[key].map(e=>({name:e,size:1}))
+                                            children:selectedData[key].map(e=>({name:e,size:peopleEvent[e].length}))
                                         }
                                     }
                                     break;
@@ -113,7 +115,7 @@ export default class TreeMap {
                                                 name: _group,
                                                 children: selectedData[key].map(e => ({
                                                     name: e,
-                                                    size: 1
+                                                    size: peopleEvent[e].length
                                                 }))
                                             }]
                                         })
@@ -128,7 +130,7 @@ export default class TreeMap {
                                             name: _group,
                                             children: selectedData[key].map(e => ({
                                                 name: e,
-                                                size: 1
+                                                size: peopleEvent[e].length
                                             }))
                                         }
                                     }
@@ -157,7 +159,7 @@ export default class TreeMap {
                             selectedData[key].forEach( e => {
                                 _data.children[index].children.push({
                                     name:e,
-                                    size:1
+                                    size:peopleEvent[e].length
                                 })
                             })
                             break;
@@ -175,14 +177,14 @@ export default class TreeMap {
                                         name: e,
                                         children: [{
                                             name: e,
-                                            size: 1
+                                            size: peopleEvent[e].length
                                         }]
                                     })
                                     index = _data.children.length - 1;
                                 } else {
                                     _data.children[index].children.push({
                                         name: e,
-                                        size: 1
+                                        size: peopleEvent[e].length
                                     })
                                 }
                             })
@@ -191,7 +193,10 @@ export default class TreeMap {
                             //undefined:非108将
                             _data.children.push({
                                 name:'非108将',
-                                children:selectedData[key].map(e=>({name:e,size:1}))
+                                children: selectedData[key].map(e => ({
+                                    name: e,
+                                    size: peopleEvent[e].length
+                                }))
                             })
                             break;
                     }
@@ -201,7 +206,7 @@ export default class TreeMap {
             // console.log(selectedData,'_data:',_data);
            that.drawGraph(_data,d => {
             if (d.data.name) {
-                return d.data.name
+                return d.data.name + " " + (peopleEvent[d.data.name] && d.depth!==1?peopleEvent[d.data.name].length:'')
             } else {
                 return null;
             }
@@ -238,19 +243,25 @@ export default class TreeMap {
          node.append('rect')
              .attr('width', d => d.x1 - d.x0)
              .attr('height', d => d.y1 - d.y0)
-             .attr('class', 'node')
-             .attr('fill', d => {
-                 switch (d.depth) {
-                     case 1:
-                         return colorThemes_[d.data.name];
-                     case 2:
-                         return colorThemes_[d.parent.data.name];
-                     case 3:
-                         return colorThemes_[d.parent.parent.data.name]
-                     default:
-                         return '#ccc'
+             .attr('class', d => {
+                 if (d.depth === 2) {
+                    return 'node parent'
+                 } else {
+                     return 'node';
                  }
              })
+             .attr('fill', d => {
+                switch (d.depth) {
+                    case 1:
+                        return colorThemes_[d.data.name];
+                    case 2:
+                        return colorThemes_[d.parent.data.name];
+                    case 3:
+                        return colorThemes_[d.parent.parent.data.name]
+                    default:
+                        return '#ccc'
+                }
+             });
 
          node.append('text')
              .attr('dx', d => {

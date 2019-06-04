@@ -28,3 +28,6 @@ body {
     transition: all ease-in-out 200ms;
     opacity: 0;
 }
+.parent {
+    stroke-width: 0.2;
+}

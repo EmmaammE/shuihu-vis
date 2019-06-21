@@ -23,6 +23,9 @@ body {
 #treemap text {
     font-size: 11px!important;
 }
+#treemap rect {
+    cursor: pointer;
+}
 
 .hidden {
     transition: all ease-in-out 200ms;
@@ -30,4 +33,20 @@ body {
 }
 .parent {
     stroke-width: 0.2;
+}
+
+.name {
+    font-size: 9px;
+    margin: 0;
+}
+
+.text-overflow {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.small {
+    font-size: 5px;
 }

@@ -10,10 +10,17 @@ dataStore('event.csv', 'relation.csv')
     .then(data => {
         debug && console.log(data);
 
-        const lineChart = new LineChart({
+        let lineChart = new LineChart({
             element:d3.select('#linechart'),
             data: data.eventsData,
         });
+
+        // window.addEventListener('resize',function () {
+        //     lineChart = new LineChart({
+        //         element: d3.select('#linechart'),
+        //         data: data.eventsData,
+        //     });
+        // })
 
         let scatterGraph = new ScatterGraph({
             element:d3.select('#scatter'),

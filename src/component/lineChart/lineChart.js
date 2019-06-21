@@ -389,7 +389,7 @@ export default class LineChart {
 						peopleEvent:peopleEvent
 					}
 				});
-				// that.element.select('.brush').call(brush.move, null);
+				that.element.select('.brush').call(brush.move, null);
 			}
 
 			// that.xAxis.call(that.xScale);

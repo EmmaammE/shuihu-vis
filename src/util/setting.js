@@ -31,7 +31,7 @@ export const colorThemes_ = {
 };
 
 const lineGraphMargin = {
-    top: 40,
+    top:10,
     right: 30,
     bottom: 50,
     left: 24,
@@ -45,7 +45,10 @@ const treemapMargin = {
     top:0,
     right:0,
     left:0,
-    bottom:20
+    bottom:20,
+    // 局部放大treemap
+    childWidth:100,
+    childHeight:100
 }
 
 const treemapWidth = 640- treemapMargin.right - treemapMargin.left;

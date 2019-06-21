@@ -52,6 +52,8 @@ export default (eventsPath, relationPath) => {
                     // });
                 });
 
+                console.log(eventYearMap);
+
                 /**108 将中每个人的党派关系 */
                 let groups = {
                     无党派: [],

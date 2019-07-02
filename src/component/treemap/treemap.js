@@ -21,210 +21,196 @@ export default class TreeMap {
         this.addUpdateListener();
         this.addRemoveListener();
         this.groupMaps = props.groupMaps;
+        this._eventDetail = null;
     }
 
     addUpdateListener() {
         let that = this;
         d3.select('#treemap')
             .select('svg')
-            .on('customBrush', function (d) {
-                var { people, peopleEvent } = d3.event.detail;
-                // console.log('people:', people, 'peopleEvent:', peopleEvent);
-                // that.showLinks();
-                that.element
-                    .selectAll('g')
-                    .data([])
-                    .exit()
-                    .remove();
-                // .attr('class', d => {
-                //     if (people.indexOf(d.data.name)===-1 && d.depth == 2) {
-                //         return 'hidden'
-                //     }
-                // })
-                let selectedData = {};
+            .on('customBrush', function () {
+                var {
+                    people,
+                    peopleEvent
+                } = d3.event.detail;
+                that._eventDetail = d3.event.detail;
+                that.updateByBrushData(people,peopleEvent)
+            } );
+    }
 
-                // console.log(that.groupMaps);
-                // let _p = [];
-                // let _k = [...that.groupMaps.keys()];
-                // [...that.groupMaps.values()].forEach((e,index)=>{
-                //     if(e[1]==3) {
-                //         _p.push({
-                //             [_k[index]]: e
-                //         });
-                //     }
-                // })
-                // console.log(_p);
-                people.forEach(ele => {
-                    let parent = that.groupMaps.get(ele)
-                        ? that.groupMaps.get(ele)
-                        : '非108将';
-                    if (selectedData.hasOwnProperty(parent)) {
-                        selectedData[parent].push(ele);
-                    } else {
-                        selectedData[parent] = [ele];
-                    }
-                });
+    updateByBrushData(people,peopleEvent) {
+        let that = this;
 
-                // console.log(peopleEvent, ':peopleEvent');
-                // 1代表为父亲节点；2是直接child；3是再子
-                let _data = {
-                    name: '派系',
-                    children: []
-                };
-                for (const key in selectedData) {
-                    if (selectedData.hasOwnProperty(key)) {
-                        // key已经转换为了string
-                        let keyArr = key.split(',');
-                        //===
-                        switch (+keyArr[1]) {
-                            case 3:
-                                let _group, _parent;
-                                switch (+keyArr[2]) {
-                                    case 4.1:
-                                        _group = '史进';
-                                        _parent = '鲁智深';
-                                        //属于鲁智深-》史进派系（data.js）
-                                        break;
+        that.element
+            .selectAll('g')
+            .data([])
+            .exit()
+            .remove();
 
-                                    default:
-                                        _group = song[keyArr[2] - 4.1];
-                                        _parent = '宋江';
-                                        break;
-                                }
-                                let indexOutter_ = -1,
-                                    indexInner_ = -1;
-                                for (let i = 0; i < _data.children.length; i++) {
-                                    if (_data.children[i].name == _parent) {
-                                        indexOutter_ = i;
-                                        break;
-                                    }
-                                }
-                                if (indexOutter_ == -1) {
-                                    _data.children.push({
-                                        name: _parent,
-                                        children: [
-                                            {
-                                                name: _group,
-                                                children: selectedData[key].map(e => ({
-                                                    name: e,
-                                                    size: peopleEvent[e].length * factor
-                                                }))
-                                            }
-                                        ]
-                                    });
-                                } else {
-                                    for (
-                                        let i = 0;
-                                        i < _data.children[indexOutter_].children.length;
-                                        i++
-                                    ) {
-                                        if (
-                                            _data.children[indexOutter_].children[i].name == _group
-                                        ) {
-                                            indexInner_ = i;
-                                            break;
-                                        }
-                                    }
-                                    _data.children[indexOutter_].children[indexInner_] = {
-                                        name: _group,
-                                        children: selectedData[key].map(e => ({
-                                            name: e,
-                                            size: peopleEvent[e].length * factor
-                                        }))
-                                    };
-                                }
+        let selectedData = {};
+
+        people.forEach(ele => {
+            let parent = that.groupMaps.get(ele) ?
+                that.groupMaps.get(ele) :
+                '非108将';
+            if (selectedData.hasOwnProperty(parent)) {
+                selectedData[parent].push(ele);
+            } else {
+                selectedData[parent] = [ele];
+            }
+        });
+
+        // console.log(peopleEvent, ':peopleEvent');
+        // 1代表为父亲节点；2是直接child；3是再子
+        let _data = {
+            name: '派系',
+            children: []
+        };
+        for (const key in selectedData) {
+            if (selectedData.hasOwnProperty(key)) {
+                // key已经转换为了string
+                let keyArr = key.split(',');
+                //===
+                switch (+keyArr[1]) {
+                    case 3:
+                        let _group, _parent;
+                        switch (+keyArr[2]) {
+                            case 4.1:
+                                _group = '史进';
+                                _parent = '鲁智深';
+                                //属于鲁智深-》史进派系（data.js）
                                 break;
-                            case 2:
-                                let index = -1;
-                                for (let i = 0; i < _data.children.length; i++) {
-                                    if (_data.children[i].name == keyArr[0]) {
-                                        index = i;
-                                        break;
-                                    }
-                                }
-                                if (index == -1) {
-                                    //添加已经有的子派系
-                                    _data.children.push({
-                                        name: keyArr[0],
-                                        children: []
-                                    });
-                                    index = _data.children.length - 1;
-                                }
-                                // console.log(_data, index);
-                                selectedData[key].forEach(e => {
-                                    _data.children[index].children.push({
-                                        name: e,
-                                        size: peopleEvent[e].length * factor
-                                    });
-                                });
-                                break;
-                            case 1:
-                                selectedData[key].forEach(e => {
-                                    let index = -1;
-                                    for (let i = 0; i < _data.children.length; i++) {
-                                        if (_data.children[i].name == e) {
-                                            index = i;
-                                            break;
-                                        }
-                                    }
-                                    if (index == -1) {
-                                        _data.children.push({
-                                            name: e,
-                                            children: [
-                                                {
-                                                    name: e,
-                                                    size: peopleEvent[e].length * factor
-                                                }
-                                            ]
-                                        });
-                                        index = _data.children.length - 1;
-                                    } else {
-                                        _data.children[index].children.push({
-                                            name: e,
-                                            size: peopleEvent[e].length * factor
-                                        });
-                                    }
-                                });
-                                break;
+
                             default:
-                                //undefined:非108将
-                                _data.children.push({
-                                    name: '非108将',
+                                _group = song[keyArr[2] - 4.1];
+                                _parent = '宋江';
+                                break;
+                        }
+                        let indexOutter_ = -1,
+                            indexInner_ = -1;
+                        for (let i = 0; i < _data.children.length; i++) {
+                            if (_data.children[i].name == _parent) {
+                                indexOutter_ = i;
+                                break;
+                            }
+                        }
+                        if (indexOutter_ == -1) {
+                            _data.children.push({
+                                name: _parent,
+                                children: [{
+                                    name: _group,
                                     children: selectedData[key].map(e => ({
                                         name: e,
                                         size: peopleEvent[e].length * factor
                                     }))
-                                });
+                                }]
+                            });
+                        } else {
+                            for (let i = 0; i < _data.children[indexOutter_].children.length; i++ ) {
+                                if (
+                                    _data.children[indexOutter_].children[i].name == _group
+                                ) {
+                                    indexInner_ = i;
+                                    break;
+                                }
+                            }
+                            _data.children[indexOutter_].children[indexInner_] = {
+                                name: _group,
+                                children: selectedData[key].map(e => ({
+                                    name: e,
+                                    size: peopleEvent[e].length * factor
+                                }))
+                            };
+                        }
+                        break;
+                    case 2:
+                        let index = -1;
+                        for (let i = 0; i < _data.children.length; i++) {
+                            if (_data.children[i].name == keyArr[0]) {
+                                index = i;
                                 break;
+                            }
                         }
-                    }
+                        if (index == -1) {
+                            //添加已经有的子派系
+                            _data.children.push({
+                                name: keyArr[0],
+                                children: []
+                            });
+                            index = _data.children.length - 1;
+                        }
+                        // console.log(_data, index);
+                        selectedData[key].forEach(e => {
+                            _data.children[index].children.push({
+                                name: e,
+                                size: peopleEvent[e].length * factor
+                            });
+                        });
+                        break;
+                    case 1:
+                        selectedData[key].forEach(e => {
+                            let index = -1;
+                            for (let i = 0; i < _data.children.length; i++) {
+                                if (_data.children[i].name == e) {
+                                    index = i;
+                                    break;
+                                }
+                            }
+                            if (index == -1) {
+                                _data.children.push({
+                                    name: e,
+                                    children: [{
+                                        name: e,
+                                        size: peopleEvent[e].length * factor
+                                    }]
+                                });
+                                index = _data.children.length - 1;
+                            } else {
+                                _data.children[index].children.push({
+                                    name: e,
+                                    size: peopleEvent[e].length * factor
+                                });
+                            }
+                        });
+                        break;
+                    default:
+                        //undefined:非108将
+                        _data.children.push({
+                            name: '非108将',
+                            children: selectedData[key].map(e => ({
+                                name: e,
+                                size: peopleEvent[e].length * factor
+                            }))
+                        });
+                        break;
                 }
+            }
+        }
 
-                // console.log(selectedData,'_data:',_data);
-                that.drawGraph(
-                    _data,
-                    d => {
-                        if (d.data.name) {
-                            return (
-                                d.data.name +
-                                ' ' +
-                                (peopleEvent[d.data.name] && d.depth !== 1
-                                    ? peopleEvent[d.data.name].length
-                                    : '')
-                            );
-                        } else {
-                            return null;
-                        }
-                    },
-                    d => {
-                        if ((d.y1 - d.y0) * (d.x1 - d.x0) < 45 * 28) {
-                            return 'hidden';
-                        } else {
-                            return 'name';
-                        }
-                    }
-                );
-            });
+        // console.log(selectedData,'_data:',_data);
+        that.drawGraph(
+            _data,
+            d => {
+                if (d.data.name) {
+                    return (
+                        d.data.name +
+                        ' ' +
+                        (peopleEvent[d.data.name] && d.depth !== 1 ?
+                            peopleEvent[d.data.name].length :
+                            '')
+                    );
+                } else {
+                    return null;
+                }
+            },
+            d => {
+                if ((d.y1 - d.y0) * (d.x1 - d.x0) < 45 * 28) {
+                    return 'hidden';
+                } else {
+                    return 'name';
+                }
+            }
+        );
     }
 
     addRemoveListener() {
@@ -238,9 +224,11 @@ export default class TreeMap {
                     .remove();
                 this.draw();
             });
+        this._eventDetail = null;
     }
 
     drawGraph(data, createText, styleText) {
+        var timeout = null;
         let currentDepth;
         const treemap = d3
             .treemap()
@@ -250,6 +238,7 @@ export default class TreeMap {
         const root = d3.hierarchy(data).sum(d => d.size);
 
         const tree = treemap(root);
+
 
         // console.log(root.descendants());
         const node = this.element
@@ -277,15 +266,28 @@ export default class TreeMap {
             .append('foreignObject')
             .attr('width', d => d.x1 - d.x0)
             .attr('height', d => d.y1 - d.y0)
-            .on('click', zoom)
             // .on('dblclick', cancelzoom)
+            .on('click', (d)=>{
+                // clearTimeout(timeout);
+                // console.log(timeout);
+                // timeout = setTimeout(() => {
+                //     console.log('click');
+                    zoom(d);
+                // }, 500);
+            })
             .append('xhtml:p')
             .attr('class', styleText)
             .text(createText);
 
         let that = this;
+
+        document.querySelector('.cbutton').addEventListener('click', function() {
+
+            cancelzoom();
+        })
+
         function zoom(d) {
-            console.log('clicked:', d.data.name, ',depth', d.depth);
+            // console.log('clicked:', d.data.name, ',depth', d.depth);
             currentDepth = d.depth;
             that.x.domain([d.parent.x0, d.parent.x1]);
             that.y.domain([d.parent.y0, d.parent.y1]);
@@ -346,7 +348,20 @@ export default class TreeMap {
         }
 
         function cancelzoom(d) {
-            that.draw();
+            that.element
+                .selectAll('g')
+                .data([])
+                .exit()
+                .remove();
+           if (that._eventDetail) {
+                var {
+                    people,
+                    peopleEvent
+                } = that._eventDetail;
+                that.updateByBrushData(people, peopleEvent);
+           } else {
+               that.draw();
+           }
         }
 
         function fillColor(d) {

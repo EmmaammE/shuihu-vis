@@ -3,7 +3,7 @@ import ScatterGraph from './component/scatterGraph/index';
 import LineChart from "./component/lineChart/lineChart";
 import { lineGraphSetting} from "./util/setting";
 import "./main.css";
-import "../button/button.css";
+import "./component/button/button.css";
 import TreeMap from "./component/treemap/treemap";
 
 const debug = false;
